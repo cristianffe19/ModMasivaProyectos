@@ -1,0 +1,312 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+>
+    <Dialog
+        id="dialogEditarProyecto"
+        title="Editar Proyecto"
+        contentWidth="800px"
+        draggable="true"
+        resizable="true"
+    >
+        <content>
+            <form:SimpleForm
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanL="4"
+                labelSpanM="4"
+                emptySpanL="0"
+                emptySpanM="0"
+                columnsL="2"
+                columnsM="2"
+            >
+                <form:content>
+                    <Label text="UseProjectBilling" />
+                    <Input
+                        value="{proyectos>UseProjectBilling}"
+                        maxLength="1"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="RestrictTimePosting" />
+                    <Input
+                        value="{proyectos>RestrictTimePosting}"
+                        maxLength="1"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProfitCenter" />
+                    <Input
+                        value="{proyectos>ProfitCenter}"
+                        maxLength="10"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProfitCenterName" />
+                    <Input
+                        value="{proyectos>ProfitCenterName}"
+                        maxLength="20"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProjectID" />
+                    <Input
+                        value="{proyectos>ProjectID}"
+                        maxLength="40"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProjectName" />
+                    <Input
+                        value="{proyectos>ProjectName}"
+                        maxLength="40"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProjectStage" />
+                    <Input
+                        value="{proyectos>ProjectStage}"
+                        maxLength="4"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="StageDesc" />
+                    <Input
+                        value="{proyectos>StageDesc}"
+                        maxLength="40"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="StartDate" />
+                    <DatePicker
+                        value="{proyectos>StartDate}"
+                        displayFormat="dd.MM.yyyy"
+                        valueFormat="dd.MM.yyyy"
+                        change=".onFieldChange"
+                    />
+
+                    <Label text="EndDate" />
+                    <DatePicker
+                        value="{proyectos>EndDate}"
+                        displayFormat="dd.MM.yyyy"
+                        valueFormat="dd.MM.yyyy"
+                        change=".onFieldChange"
+                    />
+
+                    <Label text="Customer" />
+                    <Input
+                        value="{proyectos>Customer}"
+                        maxLength="10"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="CustomerName" />
+                    <Input
+                        value="{proyectos>CustomerName}"
+                        maxLength="166"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProjManagerId" />
+                    <Input
+                        value="{proyectos>ProjManagerId}"
+                        maxLength="8"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProjManagerName" />
+                    <Input
+                        value="{proyectos>ProjManagerName}"
+                        maxLength="80"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProjAccountantId" />
+                    <Input
+                        value="{proyectos>ProjAccountantId}"
+                        maxLength="8"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProjAccountantName" />
+                    <Input
+                        value="{proyectos>ProjAccountantName}"
+                        maxLength="80"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProjControllerId" />
+                    <Input
+                        value="{proyectos>ProjControllerId}"
+                        maxLength="8"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProjControllerName" />
+                    <Input
+                        value="{proyectos>ProjControllerName}"
+                        maxLength="80"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProjPartnerId" />
+                    <Input
+                        value="{proyectos>ProjPartnerId}"
+                        maxLength="8"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProjPartnerName" />
+                    <Input
+                        value="{proyectos>ProjPartnerName}"
+                        maxLength="80"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="CostCenter" />
+                    <Input
+                        value="{proyectos>CostCenter}"
+                        maxLength="10"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="CostCenterName" />
+                    <Input
+                        value="{proyectos>CostCenterName}"
+                        maxLength="20"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="ProjectCategory" />
+                    <Input
+                        value="{proyectos>ProjectCategory}"
+                        maxLength="1"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="Currency" />
+                    <Input
+                        value="{proyectos>Currency}"
+                        maxLength="5"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="Currencyname" />
+                    <Input
+                        value="{proyectos>Currencyname}"
+                        maxLength="40"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="OrgID" />
+                    <Input
+                        value="{proyectos>OrgID}"
+                        maxLength="5"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="OrgDesc" />
+                    <Input
+                        value="{proyectos>OrgDesc}"
+                        maxLength="40"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="Confidential" />
+                    <Input
+                        value="{proyectos>Confidential}"
+                        maxLength="1"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="YY1_Fechadeventa_Cpr" />
+                    <DatePicker
+                        value="{proyectos>YY1_Fechadeventa_Cpr}"
+                        displayFormat="dd.MM.yyyy"
+                        valueFormat="dd.MM.yyyy"
+                        change=".onFieldChange"
+                    />
+
+                    <Label text="YY1_Fechadeventa_CprF" />
+                    <Input
+                        value="{proyectos>YY1_Fechadeventa_CprF}"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="YY1_Geografia_Cpr" />
+                    <Input
+                        value="{proyectos>YY1_Geografia_Cpr}"
+                        maxLength="3"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="YY1_Geografia_CprF" />
+                    <Input
+                        value="{proyectos>YY1_Geografia_CprF}"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="YY1_Geografia_CprT" />
+                    <Input
+                        value="{proyectos>YY1_Geografia_CprT}"
+                        maxLength="60"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="YY1_Producto_Cpr" />
+                    <Input
+                        value="{proyectos>YY1_Producto_Cpr}"
+                        maxLength="5"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="YY1_Producto_CprF" />
+                    <Input
+                        value="{proyectos>YY1_Producto_CprF}"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="YY1_Producto_CprT" />
+                    <Input
+                        value="{proyectos>YY1_Producto_CprT}"
+                        maxLength="60"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="YY1_Tipodeproyecto_Cpr" />
+                    <Input
+                        value="{proyectos>YY1_Tipodeproyecto_Cpr}"
+                        maxLength="1"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="YY1_Tipodeproyecto_CprF" />
+                    <Input
+                        value="{proyectos>YY1_Tipodeproyecto_CprF}"
+                        liveChange=".onFieldChange"
+                    />
+
+                    <Label text="YY1_Tipodeproyecto_CprT" />
+                    <Input
+                        value="{proyectos>YY1_Tipodeproyecto_CprT}"
+                        maxLength="60"
+                        liveChange=".onFieldChange"
+                    />
+                </form:content>
+            </form:SimpleForm>
+        </content>
+
+        <buttons>
+            <Button
+                text="Guardar"
+                type="Emphasized"
+                press=".onGuardarProyecto"
+            />
+            <Button
+                text="Cancelar"
+                press=".onCerrarDialogProyecto"
+            />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,45 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:u="sap.ui.unified"
+>
+    <Dialog
+        id="dlgCargaArchivo"
+        title="{i18n>btn_upload_file}"
+        draggable="true"
+        resizable="true"
+        contentWidth="400px"
+    >
+        <content>
+            <l:VerticalLayout class="sapUiSmallMargin">
+                <u:FileUploader
+                    id="fileUploader"
+                    fileType="xlsx"
+                    change="onFileChange"
+                    placeholder="{i18n>upload_ph_file}"
+                    style="Emphasized"
+                />
+            </l:VerticalLayout>
+        </content>
+        <beginButton>
+            <Button
+                text="{i18n>btn_process_file}"
+                enabled="{AppModel>/enableBtnPlantilla}"
+                press="onProcesarExcel"
+            />
+        </beginButton>
+        <endButton>
+            <Input
+                id="inputPassword"
+                type="Password"
+                placeholder="{i18n>UPLOAD_PH_PASSWORD}"
+                width="100%"
+            />
+            <Button
+                text="{i18n>btn_close}"
+                press="closeDialog"
+            />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,104 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+>
+    <Dialog
+        id="dialogEditarPaquete"
+        title="Editar Paquete de Trabajo"
+        contentWidth="800px"
+        draggable="true"
+        resizable="true"
+    >
+        <content>
+            <form:SimpleForm
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanL="4"
+                labelSpanM="4"
+                emptySpanL="0"
+                emptySpanM="0"
+                columnsL="2"
+                columnsM="2"
+            >
+                <form:content>
+                    <Label text="Description" />
+                    <Input
+                        value="{workPackage>Description}"
+                        maxLength="40"
+                        liveChange=".onFieldChangePaquetes"
+                    />
+
+                    <Label text="WPStartDate" />
+                    <DatePicker
+                        value="{workPackage>WPStartDate}"
+                        displayFormat="dd.MM.yyyy"
+                        valueFormat="dd.MM.yyyy"
+                        change=".onFieldChangePaquetes"
+                    />
+
+                    <Label text="WPEndDate" />
+                    <DatePicker
+                        value="{workPackage>WPEndDate}"
+                        displayFormat="dd.MM.yyyy"
+                        valueFormat="dd.MM.yyyy"
+                        change=".onFieldChangePaquetes"
+                    />
+
+                    <Label text="WorkPackageType" />
+                    <Input
+                        value="{workPackage>WorkPackageType}"
+                        maxLength="4"
+                        liveChange=".onFieldChangePaquetes"
+                    />
+
+                    <Label text="UnitQuantity" />
+                    <Input
+                        value="{workPackage>UnitQuantity}"
+                        type="Number"
+                        liveChange=".onFieldChangePaquetes"
+                    />
+
+                    <Label text="UnitId" />
+                    <Input
+                        value="{workPackage>UnitId}"
+                        maxLength="3"
+                        liveChange=".onFieldChangePaquetes"
+                    />
+
+                    <Label text="YY1_TipodeproyectoSub_cpd" />
+                    <Input
+                        value="{workPackage>YY1_TipodeproyectoSub_cpd}"
+                        maxLength="1"
+                        liveChange=".onFieldChangePaquetes"
+                    />
+
+                    <Label text="YY1_TipodeproyectoSub_cpdF" />
+                    <Input
+                        value="{workPackage>YY1_TipodeproyectoSub_cpdF}"
+                        liveChange=".onFieldChangePaquetes"
+                    />
+
+                    <Label text="YY1_TipodeproyectoSub_cpdT" />
+                    <Input
+                        value="{workPackage>YY1_TipodeproyectoSub_cpdT}"
+                        maxLength="60"
+                        liveChange=".onFieldChangePaquetes"
+                    />
+                </form:content>
+            </form:SimpleForm>
+        </content>
+
+        <buttons>
+            <Button
+                text="Guardar"
+                type="Emphasized"
+                press=".onGuardarPaquete"
+            />
+            <Button
+                text="Cancelar"
+                press=".onCerrarDialogPaquete"
+            />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,153 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+>
+    <Dialog
+        id="dialogEditarDemand"
+        title="Editar Resource Demand"
+        contentWidth="800px"
+        draggable="true"
+        resizable="true"
+    >
+        <content>
+            <form:SimpleForm
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanL="4"
+                labelSpanM="4"
+                emptySpanL="0"
+                emptySpanM="0"
+                columnsL="2"
+                columnsM="2"
+            >
+                <form:content>
+                    <Label text="EngagementProject" />
+                    <Input
+                        value="{demandResource>EngagementProject}"
+                        maxLength="10"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="WorkItem" />
+                    <Input
+                        value="{demandResource>WorkItem}"
+                        maxLength="20"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="BillingControlCategory" />
+                    <Input
+                        value="{demandResource>BillingControlCategory}"
+                        maxLength="4"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="DeliveryOrganization" />
+                    <Input
+                        value="{demandResource>DeliveryOrganization}"
+                        maxLength="4"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="EngagementProjectResourceType" />
+                    <Input
+                        value="{demandResource>EngagementProjectResourceType}"
+                        maxLength="4"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="EngagementProjectResource" />
+                    <Input
+                        value="{demandResource>EngagementProjectResource}"
+                        maxLength="4"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="WorkforcePersonUserID" />
+                    <Input
+                        value="{demandResource>WorkforcePersonUserID}"
+                        maxLength="12"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="Country2DigitISOCode" />
+                    <Input
+                        value="{demandResource>Country2DigitISOCode}"
+                        maxLength="2"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="KeyDate" />
+                    <DatePicker
+                        value="{demandResource>KeyDate}"
+                        displayFormat="dd.MM.yyyy"
+                        valueFormat="dd.MM.yyyy"
+                        change=".onFieldChangeDemands"
+                    />
+
+                    <Label text="PersonWorkAgreement" />
+                    <Input
+                        value="{demandResource>PersonWorkAgreement}"
+                        maxLength="8"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="ResourceDemandStatus" />
+                    <Input
+                        value="{demandResource>ResourceDemandStatus}"
+                        maxLength="1"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="UnitOfMeasure" />
+                    <Input
+                        value="{demandResource>UnitOfMeasure}"
+                        maxLength="3"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="Quantity" />
+                    <Input
+                        value="{demandResource>Quantity}"
+                        type="Number"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="Currency" />
+                    <Input
+                        value="{demandResource>Currency}"
+                        maxLength="5"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="DemandCostAmt" />
+                    <Input
+                        value="{demandResource>DemandCostAmt}"
+                        type="Number"
+                        liveChange=".onFieldChangeDemands"
+                    />
+
+                    <Label text="DemandRevAmt" />
+                    <Input
+                        value="{demandResource>DemandRevAmt}"
+                        type="Number"
+                        liveChange=".onFieldChangeDemands"
+                    />
+                </form:content>
+            </form:SimpleForm>
+        </content>
+
+        <buttons>
+            <Button
+                text="Guardar"
+                type="Emphasized"
+                press=".onGuardarDemand"
+            />
+            <Button
+                text="Cancelar"
+                press=".onCerrarDialogDemand"
+            />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

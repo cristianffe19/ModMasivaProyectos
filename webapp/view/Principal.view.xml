@@ -664,6 +664,23 @@
                                             />
                                         </t:template>
                                     </t:Column>
+                                        <t:Column
+                                        id="colYY1Active"
+                                        width="160px"
+                                        resizable="true"
+                                        autoResizable="true"
+                                        visible="false"
+                                    >
+                                        <t:label>
+                                            <Label text="{i18n>YY1_ACTIVE_Cpr}" />
+                                        </t:label>
+                                        <t:template>
+                                            <Text
+                                                text="{proyectos>YY1_ACTIVE_Cpr}"
+                                                wrapping="false"
+                                            />
+                                        </t:template>
+                                    </t:Column>
                                     <t:Column
                                         id="colYY1Venta"
                                         width="160px"

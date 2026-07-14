@@ -1279,6 +1279,7 @@ sap.ui.define([
 						"OrgID",
 						"OrgDesc",
 						"Confidential",
+						"YY1_ACTIVE_Cpr",
 						"YY1_Fechadeventa_Cpr",
 						"YY1_Fechadeventa_CprF",
 						"YY1_Geografia_Cpr",

@@ -220,6 +220,13 @@
                         liveChange=".onFieldChange"
                     />
 
+                    <Label text="YY1_ACTIVE_Cpr" />
+                    <Input
+                        value="{proyectos>YY1_ACTIVE_Cpr}"
+                        maxLength="1"
+                        liveChange=".onFieldChange"
+                    />
+
                     <Label text="YY1_Fechadeventa_Cpr" />
                     <DatePicker
                         value="{proyectos>YY1_Fechadeventa_Cpr}"

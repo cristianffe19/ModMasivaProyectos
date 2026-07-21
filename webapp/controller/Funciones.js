@@ -513,6 +513,17 @@ sap.ui.define([
 			this._oDialogProyecto.open();
 		},
 
+		onOpenDialogModExe: function () {
+			//this._oCamposModificados = {}; // resetear campos modificados
+			if (!this._pExecutionModeDialog) {
+				this._pExecutionModeDialog = sap.ui.xmlfragment("com.co.stratesys.zmodproyectos.view.ModoEjecucion", this);
+				this.getView().addDependent(this._pExecutionModeDialog);
+			}
+
+			this._pExecutionModeDialog.open();
+
+		},
+
 		onOpenDialogPaquetes: function () {
 			this._oCamposModificadosPaquetes = {}; // resetear campos modificados
 			if (!this._oDialogPaquetes) {
@@ -722,7 +733,7 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("AppModel").setProperty("/enableBtnSelCampos", false);
 			this.getOwnerComponent().getModel("AppModel").setProperty("/indCargaExcel", true);
 			this.getOwnerComponent().getModel("AppModel").setProperty("/enableStatusProy", false);
-			
+
 
 			var oReader = new FileReader();
 
@@ -961,23 +972,11 @@ sap.ui.define([
 
 		onModMasiva: function () {
 
-			MessageBox.confirm("¿Está seguro que desea modificar masivamente los proyectos Seleccionados?", {
-				title: "Confirmación",
-				onClose: function (oAction) {
-					if (oAction === MessageBox.Action.OK) {
-						this.ejecutarModificacionMasiva();
-						// El usuario confirmó
-						//   this._eliminarRegistro();
-					} else {
-						// El usuario canceló
-						//   MessageBox.information("Operación cancelada");
-					}
-				}.bind(this)
-			});
+			this.onOpenDialogModExe();
 
 		},
 
-		ejecutarModificacionMasiva: async function () {
+		ejecutarModificacionMasiva: async function (batch) {
 
 			var oAppModel = this.getOwnerComponent().getModel("AppModel");
 			/*
@@ -1022,10 +1021,10 @@ sap.ui.define([
 			try {
 
 				await Promise.all([
-					this.updateEntidad(oModelProyectos, "ProjectSet", oBusyDialog),
-					this.updateEntidad(oModelPaquetes, "WorkPackageSet", oBusyDialog),
-					this.updateEntidad(oModelDemand, "ResourceDemandSet", oBusyDialog),
-					this.updateEntidad(oModelRolesSel, "RoleSet", oBusyDialog)
+					this.updateEntidad(oModelProyectos, "ProjectSet", oBusyDialog, batch),
+					this.updateEntidad(oModelPaquetes, "WorkPackageSet", oBusyDialog, batch),
+					this.updateEntidad(oModelDemand, "ResourceDemandSet", oBusyDialog, batch),
+					this.updateEntidad(oModelRolesSel, "RoleSet", oBusyDialog, batch)
 				]);
 
 				sap.m.MessageToast.show("Modificación masiva completada");
@@ -1038,8 +1037,8 @@ sap.ui.define([
 				oBusyDialog.destroy();
 			}
 		},
-		updateEntidad: async function (oModel, sEntidad, oBusyDialog) {
-
+		updateEntidad: async function (oModel, sEntidad, oBusyDialog, batch) {
+			debugger;
 			var oAppModel = this.getOwnerComponent().getModel("AppModel");
 			var totRegProcesar = oAppModel.getProperty("/totRegProcesar");
 			var regProcesados = oAppModel.getProperty("/regProcesados");
@@ -1051,11 +1050,17 @@ sap.ui.define([
 				var item = registros[i];
 
 				var itemCamposMod = this.verificarCargaConsulta(item, sEntidad);
-				
+
 				var datosApi = this.setPayloadApi(sEntidad, itemCamposMod);
 				var base64 = btoa(datosApi.payload);
 				var projectId = item.ProjectID || item.EngagementProject;
 				var urlFija = `/sap/opu/odata4/sap/zsrv_project_entry/srvd/sap/zsrv_project_entry/0001/Project('${projectId}')`;
+
+				//EJECUCIÓN EN SEGUNDO PLANO
+				if (batch) {
+					this.saveItemToBatch(projectId, datosApi.payload, sEntidad, i);
+					continue;
+				}
 
 				var oPayloadBase64 = {
 					projectId: projectId,
@@ -1096,7 +1101,7 @@ sap.ui.define([
 		verificarCargaConsulta: function (item, entidad) {
 			var oAppModel = this.getOwnerComponent().getModel("AppModel");
 			var indCargaExcel = oAppModel.getProperty("/indCargaExcel");
-             debugger;
+			debugger;
 			if (indCargaExcel) {
 				return item;
 			} else {
@@ -1107,17 +1112,17 @@ sap.ui.define([
 					case "ProjectSet":
 						itemAux = this._oCamposModificados["proyectos"];
 						itemAux.ProjectID = item.ProjectID;
-						
+
 						break;
 					case "WorkPackageSet":
 						itemAux = this._oCamposModificados["paquetes"];
 						itemAux.ProjectID = item.ProjectID;
 						itemAux.WorkPackageID = item.WorkPackageID;
 						itemAux.WorkPackageName = item.WorkPackageName;
-						
+
 						break;
 					case "ResourceDemandSet":
-						itemAux	 = this._oCamposModificados["demands"];
+						itemAux = this._oCamposModificados["demands"];
 						itemAux.WorkPackage = item.WorkPackage;
 						itemAux.ResourceDemand = item.ResourceDemand;
 						break;
@@ -1460,6 +1465,275 @@ sap.ui.define([
 
 			return oModel;
 		},
+
+		_csrfToken: null,
+
+		_fetchCsrfToken: function () {
+			var that = this;
+			return new Promise(function (resolve, reject) {
+				$.ajax({
+					url: "/sap/opu/odata4/sap/zsrv_project_entry/srvd/sap/zsrv_project_entry/0001/$metadata",
+					method: "GET",
+					headers: { "X-CSRF-Token": "Fetch" },
+					success: function (data, status, oXHR) {
+						that._csrfToken = oXHR.getResponseHeader("X-CSRF-Token");
+						resolve(that._csrfToken);
+					},
+					error: function (oError) {
+						reject(oError);
+					}
+				});
+			});
+		},
+
+		_csrfToken: null,
+
+		_getCsrfToken: function () {
+			if (this._csrfToken) {
+				return Promise.resolve(this._csrfToken);
+			}
+			return this._fetchCsrfToken();
+		},
+
+		_isCsrfError: function (oError) {
+			// 403 con header específico de CSRF inválido/expirado
+			return oError && oError.status === 403 &&
+				(oError.getResponseHeader("X-CSRF-Token") === "Required" ||
+					/csrf/i.test(oError.responseText || ""));
+		},
+
+		_postODataCSRF: async function (sEndpoint, method, oBody) {
+			var that = this;
+			var sToken = await this._getCsrfToken();
+
+			var doRequest = function (sTokenToUse) {
+				return new Promise(function (resolve, reject) {
+					$.ajax({
+						url: sEndpoint,
+						method: method,
+						contentType: "application/json",
+						headers: {
+							"X-CSRF-Token": sTokenToUse,
+							"Accept": "application/json",
+							"X-Requested-With": "XMLHttpRequest"
+						},
+						data: JSON.stringify(oBody),
+						success: function (oResponse, sStatus, oXHR) {
+							let sMensaje = "Proyecto creado exitosamente";
+							let nSeverity = 1;
+
+							try {
+								const sSapMessages = oXHR.getResponseHeader("sap-messages");
+								if (sSapMessages) {
+									const aMessages = JSON.parse(sSapMessages).reverse();
+									sMensaje = aMessages.map(function (o) { return o.message; }).join("");
+									nSeverity = aMessages[0]?.numericSeverity;
+								}
+							} catch (e) {
+								console.warn("No se pudo parsear sap-messages:", e);
+							}
+
+							resolve({
+								mensaje: sMensaje,
+								numericSeverity: nSeverity,
+								id: oResponse?.id || oResponse?.projectId
+							});
+						},
+						error: function (oError) {
+							reject(oError);
+						}
+					});
+				});
+			};
+
+			try {
+				return await doRequest(sToken);
+			} catch (oError) {
+				// Si falló por token, invalidamos, pedimos uno nuevo y reintentamos UNA vez
+				if (that._isCsrfError(oError)) {
+					console.warn("Token CSRF inválido/expirado. Reintentando...");
+					that._csrfToken = null;
+
+					try {
+						var sNewToken = await that._fetchCsrfToken();
+						return await doRequest(sNewToken);
+					} catch (oRetryError) {
+						console.error("Falló también el reintento con nuevo token:", oRetryError);
+						throw oRetryError;
+					}
+				}
+
+				// Si no fue error de token, propaga el error normal
+				console.error("Error en POST:", oError);
+				throw oError;
+			}
+		},
+
+		onExecuteDialog: function () {
+			this._closeExecutionModeDialog();
+			this._executeInDialog();
+		},
+
+		onExecuteBackground: function () {
+			this._closeExecutionModeDialog();
+			this._executeInBackground();
+		},
+
+		_closeExecutionModeDialog: function () {
+			this._pExecutionModeDialog.close();
+		},
+
+		_executeInDialog: function () {
+
+			MessageBox.confirm("¿Está seguro de ejecutar las modificaciones en Dialogo ?", {
+				title: "Confirmación",
+				onClose: function (oAction) {
+					if (oAction === MessageBox.Action.OK) {
+						this.ejecutarModificacionMasiva(false);
+					} else {
+					}
+				}.bind(this)
+			});
+
+		},
+
+		_executeInBackground: function () {
+			MessageBox.confirm("¿Está seguro que desea ejecutar las modificaciones en segundo plano?", {
+				title: "Confirmación",
+				onClose: function (oAction) {
+					if (oAction === MessageBox.Action.OK) {
+						this.ejecutarModificacionMasiva(true);
+					} else {
+					}
+				}.bind(this)
+			});
+		},
+
+		_batchBuffer: [],
+		_batchSize: 2,
+		_urlApiBatch: "/sap/opu/odata4/sap/zsrv_project_update/srvd/sap/zi_srv_proyectos_update/0001",
+
+		saveItemToBatch: async function (projectId, payload, entidad, cantItems) {
+
+			var body = JSON.stringify(payload)
+			// Construye el body con los 5 campos clave + Body
+			var oBody = {
+				ProjectId: "1",      // string, max 10
+				Api: "prueba",             // string, max 20
+				Datum: "2026-07-16",       // Edm.Date
+				Zeit: "17:31:00",          // Edm.TimeOfDay
+				Uname: "USUARIO01",        // string, max 12
+				Body: body,                // string, sin límite explícito
+				Status: "A",               // string, max 1
+				Msj: "Mensaje inicial"     // string, max 100
+			};
+
+				var sId = "r" + (this._batchBuffer.length + 1);
+			this._batchBuffer.push({
+				id: sId,
+				atomicityGroup: sId,  
+				method: "POST",
+				url: "Proyectos", // ej: "Mensaje" (el alias de tu proyección)
+				headers: { "Content-Type": "application/json" },
+				body: oBody
+			});
+
+			cantItems += 1;
+			var bEsMultiplo = (cantItems % this._batchSize === 0) && cantItems > 0;
+
+			if (bEsMultiplo) {
+				debugger;
+				var aLoteAEnviar = this._batchBuffer;
+				this._batchBuffer = [];
+
+				try {
+					var oResultado = await this._postBatchODataV4(this._urlApiBatch, aLoteAEnviar);
+					console.log(`Lote de ${aLoteAEnviar.length} items enviado. OK: ${oResultado.totalOk}, Errores: ${oResultado.totalError}`);
+					return oResultado;
+				} catch (oError) {
+					console.error("Error enviando lote:", oError);
+					throw oError;
+				}
+			}
+
+			return null;
+		},
+
+		flushBatchBuffer: async function () {
+			if (this._batchBuffer.length === 0) {
+				return null;
+			}
+
+			var aLoteAEnviar = this._batchBuffer;
+			this._batchBuffer = [];
+
+			try {
+				var oResultado = await this._postBatchODataV4(this._serviceRoot, aLoteAEnviar);
+				console.log(`Lote final de ${aLoteAEnviar.length} items enviado. OK: ${oResultado.totalOk}, Errores: ${oResultado.totalError}`);
+				return oResultado;
+			} catch (oError) {
+				console.error("Error enviando lote final:", oError);
+				throw oError;
+			}
+		},
+
+		_postBatchODataV4: async function (sServiceRoot, aRequests) {
+			var that = this;
+			var sToken = await this._getCsrfToken();
+			var oBatchBody = { requests: aRequests };
+
+			var doRequest = function (sTokenToUse) {
+				return new Promise(function (resolve, reject) {
+					$.ajax({
+						url: sServiceRoot + "/$batch",
+						method: "POST",
+						contentType: "application/json",
+						headers: {
+							"X-CSRF-Token": sTokenToUse,
+							"Accept": "application/json",
+							"X-Requested-With": "XMLHttpRequest"
+						},
+						data: JSON.stringify(oBatchBody),
+						success: function (oResponse) {
+							resolve(that._parseBatchResponse(oResponse));
+						},
+						error: function (oError) {
+							reject(oError);
+						}
+					});
+				});
+			};
+
+			try {
+				return await doRequest(sToken);
+			} catch (oError) {
+				if (that._isCsrfError(oError)) {
+					that._csrfToken = null;
+					var sNewToken = await that._fetchCsrfToken();
+					return await doRequest(sNewToken);
+				}
+				throw oError;
+			}
+		},
+
+		_parseBatchResponse: function (oResponse) {
+			var aResponses = oResponse.responses || [];
+			var aExitosos = [];
+			var aFallidos = [];
+
+			aResponses.forEach(function (oResp) {
+				var bOk = oResp.status >= 200 && oResp.status < 300;
+				var oResult = { id: oResp.id, status: oResp.status, body: oResp.body };
+				bOk ? aExitosos.push(oResult) : aFallidos.push(oResult);
+			});
+
+			return {
+				exitosos: aExitosos,
+				fallidos: aFallidos,
+				totalOk: aExitosos.length,
+				totalError: aFallidos.length
+			};
+		}
 
 	});
 });
